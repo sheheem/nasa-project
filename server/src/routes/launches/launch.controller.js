@@ -1,4 +1,4 @@
-const { getAllLaunch, addNewLaunch } = require('../../models/launch.model');
+const { getAllLaunch, addNewLaunch, existingLaunchId, abortLaunch } = require('../../models/launch.model');
 
 function httpgetAllLaunch(req, res) {
     return res.status(200).json(getAllLaunch())
@@ -21,7 +21,20 @@ function httpAddNewLaunch(req, res) {
     return res.status(201).json(launch);
 }
 
+function httpAbortLaunch(req, res) {
+    const launchId = +req.params.id;
+
+    if(!existingLaunchId(launchId)) {
+        res.status(404).json({
+            error: "Flight not found"
+        })
+    }
+    const abort = abortLaunch(launchId);
+    res.status(200).json(abort);
+}
+
 module.exports = {
     httpgetAllLaunch,
-    httpAddNewLaunch
+    httpAddNewLaunch,
+    httpAbortLaunch,
 }
