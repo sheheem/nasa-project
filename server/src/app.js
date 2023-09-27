@@ -3,8 +3,7 @@ const cors = require('cors');
 const path = require('path');
 const morgan = require('morgan');
 
-const planetRouter = require('./routes/planets/planet.router');
-const launchRouter = require('./routes/launches/launch.router');
+const api = require('./routes/api/api_v1')
 
 const app = express();
 
@@ -17,8 +16,8 @@ app.use(morgan("short"));
 app.use(express.json());
 app.use(express.static(path.join(__dirname,'..','public')))
 
-app.use(planetRouter);
-app.use(launchRouter);
+
+app.use('/v1', api);
 
 
 module.exports = app;

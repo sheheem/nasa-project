@@ -5,8 +5,8 @@ const { httpgetAllLaunch, httpAddNewLaunch, httpAbortLaunch } = require("./launc
 const launchRouter = express.Router();
 
 launchRouter
-  .get("/launch", httpgetAllLaunch)
-  .post("/launch", httpAddNewLaunch)
-  .delete("/launch/:id", httpAbortLaunch);
+  .get("/", httpgetAllLaunch)
+  .post("/", httpAddNewLaunch)
+  .delete("/:id", httpAbortLaunch);
 
 module.exports = launchRouter;

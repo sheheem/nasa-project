@@ -1,10 +1,13 @@
 const { getAllLaunch, addNewLaunch, existingLaunchId, abortLaunch } = require('../../models/launch.model');
+const { getPagination } = require('../../utils/query')
 
-function httpgetAllLaunch(req, res) {
-    return res.status(200).json(getAllLaunch())
+async function httpgetAllLaunch(req, res) {
+    const {skip, limit} = getPagination(req.query);
+    const launch = await getAllLaunch(skip, limit);
+    return res.status(200).json( launch);
 }
 
-function httpAddNewLaunch(req, res) {
+async function httpAddNewLaunch(req, res) {
     const launch = req.body;
     if(!launch.mission || !launch.rocket || !launch.target || !launch.launchDate) {
         res.status(400).json({
@@ -17,19 +20,21 @@ function httpAddNewLaunch(req, res) {
             error: "Invalid Launch Date"
         })
     }
-    addNewLaunch(launch)
+    await addNewLaunch(launch)
     return res.status(201).json(launch);
 }
 
-function httpAbortLaunch(req, res) {
+async function httpAbortLaunch(req, res) {
     const launchId = +req.params.id;
 
-    if(!existingLaunchId(launchId)) {
+    const existingLaunch = await existingLaunchId(launchId)
+
+    if(!existingLaunch) {
         res.status(404).json({
             error: "Flight not found"
         })
     }
-    const abort = abortLaunch(launchId);
+    const abort = await abortLaunch(launchId);
     res.status(200).json(abort);
 }
 
